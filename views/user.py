@@ -1,15 +1,15 @@
 from flask_restx import Namespace, Resource
 
-from implemented import director_service
-from dao.model.director import DirectorSchema
+from implemented import user_service
+from dao.model.user import UserSchema
 
-director_ns = Namespace('directors')
+user_ns = Namespace('users')
 
-director_schema = DirectorSchema()
-directors_schema = DirectorSchema(many=True)
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
 
 
-@director_ns.route('/')
+@user_ns.route('/')
 class DirectorsView(Resource):
     """
     Class-Based View для отображения режиссеров из БД.
@@ -21,25 +21,25 @@ class DirectorsView(Resource):
         Метод реализует отправку GET-запроса на /directors.
         :return: Сериализованные данные в формате JSON и HTTP-код 200.
         """
-        all_directors = director_service.get_all()
-        return directors_schema.dump(all_directors), 200
+        all_directors = user_service.get_all()
+        return users_schema.dump(all_directors), 200
 
 
-@director_ns.route('/<did>')
+@user_ns.route('/<uid>')
 class DirectorView(Resource):
     """
     Class-Based View для отображения конкретного режиссера из БД.
     Реализовано:
     - отображение данных о конкретном режиссере GET-запросом на /directors/id;
     """
-    def get(self, did):
+    def get(self, uid):
         """
         Метод реализует отправку GET-запроса на /directors/id.
-        :param did: id режиссера, информацию о котором нужно вытащить из БД.
+        :param uid: id режиссера, информацию о котором нужно вытащить из БД.
         :return: Сериализованные данные в формате JSON и HTTP-код 200.
         В случае, если id нет в базе данных - пустая строка и HTTP-код 404.
         """
-        director_by_id = director_service.get_one(did)
-        if director_by_id is None:
+        user_by_id = user_service.get_one(uid)
+        if user_by_id is None:
             return '', 404
-        return director_schema.dump(director_by_id), 200
+        return user_schema.dump(user_by_id), 200
