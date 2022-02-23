@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource
 
 from implemented import director_service
@@ -16,6 +17,7 @@ class DirectorsView(Resource):
     Реализовано:
     - отображение всех фильмов GET-запросом на /directors.
     """
+
     def get(self):
         """
         Метод реализует отправку GET-запроса на /directors.
@@ -23,6 +25,17 @@ class DirectorsView(Resource):
         """
         all_directors = director_service.get_all()
         return directors_schema.dump(all_directors), 200
+
+    def post(self) -> tuple:
+        """
+        Метод реализует отправку POST-запроса на /movies.
+        Записывает данные о новом фильме с использованием переданных в формате JSON в теле POST-запроса.
+        :return: Возвращает пустую строку и HTTP-код 201
+        """
+        json_data = request.json
+        director_service.create(json_data)
+
+        return '', 201
 
 
 @director_ns.route('/<did>')
@@ -32,6 +45,7 @@ class DirectorView(Resource):
     Реализовано:
     - отображение данных о конкретном режиссере GET-запросом на /directors/id;
     """
+
     def get(self, did):
         """
         Метод реализует отправку GET-запроса на /directors/id.
@@ -43,3 +57,28 @@ class DirectorView(Resource):
         if director_by_id is None:
             return '', 404
         return director_schema.dump(director_by_id), 200
+
+    def put(self, did: int) -> tuple:
+        """
+        Метод реализует PUT-запрос на /movie/id.
+        В теле запроса необходимо передать данные со всеми полями таблицы movie, для обновления данных.
+        :param did: id режиссера, информацию о котором нужно заменить из БД.
+        :return: Записывает в БД обновленные данные о конкретном фильме.
+        Возвращает пустую строку и HTTP-код 204.
+        В случае, если id нет в базе данных - пустая строка и HTTP-код 404.
+        """
+        json_data = request.json
+        director_service.update(did, json_data)
+
+        return '', 204
+
+    def delete(self, did: int) -> tuple:
+        """
+        Метод реализует отправку DELETE-запроса на /movie/id.
+        :param did: id режиссера, информацию о котором нужно удалить из БД.
+        :return: Возвращает пустую строку и HTTP-код 204.
+        В случае, если id нет в базе данных - пустая строка и HTTP-код 404.
+        """
+        director_service.delete(did)
+
+        return '', 204

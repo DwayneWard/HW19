@@ -30,3 +30,35 @@ class GenreService:
         :return: Ответ базы данных на запрос получения данных о всех фильмах.
         """
         return self.dao.get_all()
+
+    def create(self, data: dict) -> None:
+        """
+        Метод реализует запись новых данных в базу данных.
+        :param data: Данные, которые необходимо записать в базу данных.
+        :return: None
+        """
+        return self.dao.create(data)
+
+    def update(self, gid: int, data: dict) -> None:
+        """
+        Метод реализует обновление записи о фильме в базах данных.
+        :param gid: id фильма в базе данных.
+        :param data: Данные о фильме, которые нужно записать в базу данных.
+        :return:
+        """
+        genre = self.get_one(gid)
+
+        genre.id = data.get('id')
+        genre.name = data.get('name')
+
+        self.dao.update(genre)
+
+    def delete(self, gid: int) -> None:
+        """
+        Метод реализует удаление записи о фильме в базе данных по id.
+        :param gid: id фильма в базе данных.
+        :return: None
+        """
+        genre = self.get_one(gid)
+
+        self.dao.delete(genre)

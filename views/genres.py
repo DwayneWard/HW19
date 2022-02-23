@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource
 
 from dao.model.genre import GenreSchema
@@ -24,6 +25,17 @@ class GenresView(Resource):
         all_directors = genre_service.get_all()
         return genres_schema.dump(all_directors), 200
 
+    def post(self) -> tuple:
+        """
+        Метод реализует отправку POST-запроса на /movies.
+        Записывает данные о новом фильме с использованием переданных в формате JSON в теле POST-запроса.
+        :return: Возвращает пустую строку и HTTP-код 201
+        """
+        json_data = request.json
+        genre_service.create(json_data)
+
+        return '', 201
+
 
 @genre_ns.route('/<gid>')
 class GenreView(Resource):
@@ -43,3 +55,28 @@ class GenreView(Resource):
         if genre_by_id is None:
             return '', 404
         return genre_schema.dump(genre_by_id), 200
+
+    def put(self, gid: int) -> tuple:
+        """
+        Метод реализует PUT-запрос на /movie/id.
+        В теле запроса необходимо передать данные со всеми полями таблицы movie, для обновления данных.
+        :param gid: id жфнра, информацию о котором нужно заменить из БД.
+        :return: Записывает в БД обновленные данные о конкретном фильме.
+        Возвращает пустую строку и HTTP-код 204.
+        В случае, если id нет в базе данных - пустая строка и HTTP-код 404.
+        """
+        json_data = request.json
+        genre_service.update(gid, json_data)
+
+        return '', 204
+
+    def delete(self, gid: int) -> tuple:
+        """
+        Метод реализует отправку DELETE-запроса на /movie/id.
+        :param gid: id жанра, информацию о котором нужно удалить из БД.
+        :return: Возвращает пустую строку и HTTP-код 204.
+        В случае, если id нет в базе данных - пустая строка и HTTP-код 404.
+        """
+        genre_service.delete(gid)
+
+        return '', 204

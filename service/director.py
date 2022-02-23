@@ -30,3 +30,36 @@ class DirectorService:
         :return: Ответ базы данных на запрос получения данных о всех фильмах.
         """
         return self.dao.get_all()
+
+    def create(self, data: dict) -> None:
+        """
+        Метод реализует запись новых данных в базу данных.
+        :param data: Данные, которые необходимо записать в базу данных.
+        :return: None
+        """
+        return self.dao.create(data)
+
+    def update(self, did: int, data: dict) -> None:
+        """
+        Метод реализует обновление записи о фильме в базах данных.
+        :param did: id фильма в базе данных.
+        :param data: Данные о фильме, которые нужно записать в базу данных.
+        :return:
+        """
+        director = self.get_one(did)
+
+        director.id = data.get('id')
+        director.name = data.get('name')
+
+        self.dao.update(director)
+
+    def delete(self, did: int) -> None:
+        """
+        Метод реализует удаление записи о фильме в базе данных по id.
+        :param did: id фильма в базе данных.
+        :return: None
+        """
+        director = self.get_one(did)
+
+        self.dao.delete(director)
+

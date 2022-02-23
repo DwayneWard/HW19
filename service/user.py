@@ -1,3 +1,7 @@
+import base64
+import hashlib
+
+from constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from dao.user import UserDAO
 
 
@@ -28,3 +32,11 @@ class UserService:
         user.role = data.get("role")
 
         self.dao.update(user)
+
+    def make_user_password_hash(self, password):
+        base64.b64encode(hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            PWD_HASH_SALT,
+            PWD_HASH_ITERATIONS
+        ))
