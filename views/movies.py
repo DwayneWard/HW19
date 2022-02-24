@@ -1,9 +1,9 @@
 from flask import request
 from flask_restx import Namespace, Resource
 
+from helpers import auth_required, admin_required
 from implemented import movie_service
 from dao.model.movie import MovieSchema
-
 
 movie_ns = Namespace('movies')
 
@@ -26,6 +26,7 @@ class MoviesView(Resource):
     - добавление нового фильма в базу данных POST-запросом на /movies.
     """
 
+    @auth_required
     def get(self) -> tuple:
         """
         Метод реализует отправку GET-запросов на /movies.
@@ -58,6 +59,7 @@ class MoviesView(Resource):
         all_movies = movie_service.get_all()
         return movies_schema.dump(all_movies), 200
 
+    @admin_required
     def post(self) -> tuple:
         """
         Метод реализует отправку POST-запроса на /movies.
@@ -80,6 +82,7 @@ class MovieView(Resource):
     - удаление фильма из БД DELETE-запросом на /movies/id.
     """
 
+    @auth_required
     def get(self, mid: int) -> tuple:
         """
         Метод реализует GET-запрос на /movie/id.
@@ -92,6 +95,7 @@ class MovieView(Resource):
             return '', 404
         return movie_schema.dump(movie), 200
 
+    @admin_required
     def put(self, mid: int) -> tuple:
         """
         Метод реализует PUT-запрос на /movie/id.
@@ -106,6 +110,7 @@ class MovieView(Resource):
 
         return '', 204
 
+    @admin_required
     def delete(self, mid: int) -> tuple:
         """
         Метод реализует отправку DELETE-запроса на /movie/id.

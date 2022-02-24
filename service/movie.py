@@ -15,6 +15,7 @@ class MovieService:
     def create(self, data: dict) -> None:
         """
         Метод реализует запись новых данных в базу данных.
+
         :param data: Данные, которые необходимо записать в базу данных.
         :return: None
         """
@@ -23,6 +24,7 @@ class MovieService:
     def get_one(self, mid: int) -> None or list:
         """
         Метод реализует получение записи об одном фильме из базы данных по id.
+
         :param mid: id фильма в базе данных.
         :return: Ответ базы данных на запрос о получении записи о фильме по id.
         При отсутствии id в базе данных возвращает None.
@@ -35,6 +37,7 @@ class MovieService:
     def get_all(self) -> list:
         """
         Метод реализует получение записей о всех фильмах из базы данных.
+
         :return: Ответ базы данных на запрос получения данных о всех фильмах.
         """
         return self.dao.get_all()
@@ -42,6 +45,7 @@ class MovieService:
     def get_all_on_director(self, director_id: int) -> list:
         """
         Метод реализует получение записей о всех фильмах по конкретному режиссеру.
+
         :param director_id: id режиссера в базе данных.
         :return: Ответ базы данных на запрос к базе данных.
         """
@@ -50,6 +54,7 @@ class MovieService:
     def get_all_on_genre(self, genre_id: int) -> list:
         """
         Метод реализует получение записей о всех фильмах по конкретному жанру.
+
         :param genre_id: id жанра к базе данных.
         :return: Ответ базы данных на запрос.
         """
@@ -58,6 +63,7 @@ class MovieService:
     def get_all_by_year(self, year: int) -> list:
         """
         Метод реализует получение записей о всех фильмах по конкретному году выпуска.
+
         :param year: Год выпуска фильма.
         :return: Ответ базы данных на запрос.
         """
@@ -66,6 +72,7 @@ class MovieService:
     def update(self, mid: int, data: dict) -> None:
         """
         Метод реализует обновление записи о фильме в базах данных.
+
         :param mid: id фильма в базе данных.
         :param data: Данные о фильме, которые нужно записать в базу данных.
         :return:
@@ -86,6 +93,7 @@ class MovieService:
     def delete(self, mid: int) -> None:
         """
         Метод реализует удаление записи о фильме в базе данных по id.
+
         :param mid: id фильма в базе данных.
         :return: None
         """

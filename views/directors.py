@@ -1,6 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource
 
+from helpers import auth_required, admin_required
 from implemented import director_service
 from dao.model.director import DirectorSchema
 
@@ -15,10 +16,12 @@ class DirectorsView(Resource):
     """
     Class-Based View для отображения режиссеров из БД.
     Реализовано:
-    - отображение всех фильмов GET-запросом на /directors.
+    - отображение всех режиссеров GET-запросом на /directors.
+    - запись в базу данных нового режиссера POST-запросом на /directors.
     """
 
-    def get(self):
+    @auth_required
+    def get(self) -> tuple:
         """
         Метод реализует отправку GET-запроса на /directors.
         :return: Сериализованные данные в формате JSON и HTTP-код 200.
@@ -26,10 +29,11 @@ class DirectorsView(Resource):
         all_directors = director_service.get_all()
         return directors_schema.dump(all_directors), 200
 
+    @admin_required
     def post(self) -> tuple:
         """
-        Метод реализует отправку POST-запроса на /movies.
-        Записывает данные о новом фильме с использованием переданных в формате JSON в теле POST-запроса.
+        Метод реализует отправку POST-запроса на /directors.
+        Записывает данные о новом режиссере с использованием переданных в формате JSON в теле POST-запроса.
         :return: Возвращает пустую строку и HTTP-код 201
         """
         json_data = request.json
@@ -44,8 +48,11 @@ class DirectorView(Resource):
     Class-Based View для отображения конкретного режиссера из БД.
     Реализовано:
     - отображение данных о конкретном режиссере GET-запросом на /directors/id;
+    - изменение данных о конкретном режиссере в БД PUT-запросом на /directors/id;
+    - удаление фильма из БД DELETE-запросом на /directors/id.
     """
 
+    @auth_required
     def get(self, did):
         """
         Метод реализует отправку GET-запроса на /directors/id.
@@ -58,12 +65,13 @@ class DirectorView(Resource):
             return '', 404
         return director_schema.dump(director_by_id), 200
 
+    @admin_required
     def put(self, did: int) -> tuple:
         """
-        Метод реализует PUT-запрос на /movie/id.
-        В теле запроса необходимо передать данные со всеми полями таблицы movie, для обновления данных.
+        Метод реализует PUT-запрос на /directors/id.
+        В теле запроса необходимо передать данные со всеми полями таблицы directors, для обновления данных.
         :param did: id режиссера, информацию о котором нужно заменить из БД.
-        :return: Записывает в БД обновленные данные о конкретном фильме.
+        :return: Записывает в БД обновленные данные о конкретном режиссере.
         Возвращает пустую строку и HTTP-код 204.
         В случае, если id нет в базе данных - пустая строка и HTTP-код 404.
         """
@@ -72,9 +80,10 @@ class DirectorView(Resource):
 
         return '', 204
 
+    @admin_required
     def delete(self, did: int) -> tuple:
         """
-        Метод реализует отправку DELETE-запроса на /movie/id.
+        Метод реализует отправку DELETE-запроса на /directors/id.
         :param did: id режиссера, информацию о котором нужно удалить из БД.
         :return: Возвращает пустую строку и HTTP-код 204.
         В случае, если id нет в базе данных - пустая строка и HTTP-код 404.

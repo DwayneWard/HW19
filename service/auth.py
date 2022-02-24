@@ -7,12 +7,23 @@ import jwt
 
 class AuthService:
     def __init__(self, user_service: UserService):
+        """
+        Инициализация сервисов для работы.
+        :param user_service: сервисы, организующие работу с таблицей пользователей
+        """
         self.user_service = user_service
 
-    def generate_token(self, username, password, is_refresh=False):
+    def generate_token(self, username: str, password: str, is_refresh=False):
+        """
+        Метод производит генерацию токенов на основе учетных данных пользователя или refresh токена
+        :param username: Имя пользователя
+        :param password: Пароль
+        :param is_refresh: Параметр, который указывает необходимо ли использовать refresh токен
+        :return: Exception или словарь, состоящий из access и refresh токенов
+        """
         user = self.user_service.get_by_username(username)
 
-        if user in None:
+        if user is None:
             raise Exception()
 
         if not is_refresh:
@@ -39,8 +50,13 @@ class AuthService:
 
         return tokens
 
-    def approve_refresh_token(self, refresh_token):
-        data = jwt.decode(refresh_token, JWT_SECRET, algorithms=JWT_ALGORITHM)
+    def approve_refresh_token(self, refresh_token: str):
+        """
+        Метод генерирует запрос на формирование пары access
+        :param refresh_token: refresh токен, который будет использоваться для генерации новых токенов
+        :return: Exception или словарь, состоящий из access и refresh токенов
+        """
+        data = jwt.decode(refresh_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         username = data.get('username')
 
         user = self.user_service.get_by_username(username)
